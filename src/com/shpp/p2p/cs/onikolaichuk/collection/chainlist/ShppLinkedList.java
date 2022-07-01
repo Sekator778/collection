@@ -2,7 +2,7 @@ package com.shpp.p2p.cs.onikolaichuk.collection.chainlist;
 
 import java.util.*;
 
-public class ShppLinkedList<E> implements Iterable<E>{
+public class ShppLinkedList<E> implements Iterable<E> {
     private Node<E> head;
     private int size;
     private int modCount;
@@ -22,6 +22,7 @@ public class ShppLinkedList<E> implements Iterable<E>{
             }
             temp.setNext(new Node<>(element));
             size++;
+            modCount++;
         }
         return true;
     }
@@ -103,6 +104,7 @@ public class ShppLinkedList<E> implements Iterable<E>{
 
     /**
      * returns and remove head
+     *
      * @return element head
      */
     public E poll() {
@@ -205,25 +207,36 @@ public class ShppLinkedList<E> implements Iterable<E>{
      * Вызывает исключение NoSuchElementException, если этот список пуст.
      */
     public E remove(int index) {
-        if (index == 0) {
-            Node<E> result = head;
-            remove();
-            return result.data;
-        }
-        Node<E> temp = head;
-        int k = 0;
-        Node<E> pred = null;
-        while (temp != null) {
-            if (k == index) {
-                pred = geteNode((Node<E>) temp, (Node<E>) pred);
-                pred.setNext(temp.getNext());
+        if (isIndexNoCorrect(index)) {
+            throw new IndexOutOfBoundsException("wrong index " + index);
+        } else if (index == 0) {
+            E result = head.data;
+            head = null;
+            size--;
+            modCount++;
+            return result;
+        } else {
+            int k = 0;
+            Node<E> previous = null;
+            Node<E> current = head;
+            Node<E> next = current.next;
+            while (current != null) {
+                if (k == index) {
+                    previous.next = next;
+                    E result = current.data;
+                    current = null;
+                    size--;
+                    modCount++;
+                    return result;
+                } else {
+                    previous = current;
+                    current = current.next;
+                    next = current.next;
+                }
+                k++;
             }
-            k++;
-            temp = temp.getNext();
         }
-        size--;
-        assert pred != null;
-        return pred.data;
+        return null;
     }
 
     private Node<E> geteNode(Node<E> temp, Node<E> pred) {
@@ -250,6 +263,20 @@ public class ShppLinkedList<E> implements Iterable<E>{
             k++;
         }
         return -1;
+    }
+
+    public Object[] toArray() {
+        if (head == null) {
+            return null;
+        }
+        Object[] result = new Object[size];
+        Node<E> current = head;
+        int i = 0;
+        while (current != null) {
+            result[i++] = current.data;
+            current = current.next;
+        }
+        return result;
     }
 
     public void reverse() {
@@ -358,13 +385,14 @@ public class ShppLinkedList<E> implements Iterable<E>{
         @Override
         public E next() {
             if (expectedModCount != modCount) {
-                throw new ConcurrentModificationException();
+                throw new ConcurrentModificationException("list changed");
             } else if (!hasNext()) {
                 throw new NoSuchElementException();
             } else {
-               E result = current.data;
-               current = current.next;
-               return result;
+                index++;
+                E result = current.data;
+                current = current.next;
+                return result;
             }
         }
     }

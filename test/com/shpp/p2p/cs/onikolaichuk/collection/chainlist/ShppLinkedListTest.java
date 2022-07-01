@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -62,6 +64,7 @@ class ShppLinkedListTest {
         assertEquals(1, intLinkedList.remove());
         assertEquals(2, intLinkedList.peek());
     }
+
     @Test
     void whenPeekIfListEmptyThanGetNull() {
         intLinkedList.clear();
@@ -112,10 +115,11 @@ class ShppLinkedListTest {
         assertEquals(2, intLinkedList.get(1));
         assertEquals(3, intLinkedList.get(2));
     }
+
     @Test
     void whenGetWrongIndexThanGetIndexOutBoundException() {
-      Throwable exception = assertThrows(IndexOutOfBoundsException.class, () -> intLinkedList.get(31));
-      assertEquals("wrong index 31", exception.getMessage());
+        Throwable exception = assertThrows(IndexOutOfBoundsException.class, () -> intLinkedList.get(31));
+        assertEquals("wrong index 31", exception.getMessage());
     }
 
     @Test
@@ -138,6 +142,7 @@ class ShppLinkedListTest {
         assertEquals(1, intLinkedList.indexOf(2));
         assertEquals(2, intLinkedList.indexOf(3));
     }
+
     @Test
     void whenIndexOfElementNoPresentThanReturnNegativeOne() {
         assertEquals(-1, intLinkedList.indexOf(-1));
@@ -146,17 +151,41 @@ class ShppLinkedListTest {
 
     @Test
     void whenPollThanGetDataOfCurrentHead() {
-        System.out.println(intLinkedList);
         assertEquals(1, intLinkedList.poll());
-        System.out.println(intLinkedList);
-
         assertEquals(2, intLinkedList.poll());
-        System.out.println(intLinkedList);
-
+        assertEquals(3, intLinkedList.poll());
+        assertNull(intLinkedList.poll());
     }
 
     @Test
     void testRemove() {
+        assertEquals(3, intLinkedList.size());
+
+        assertEquals(1, intLinkedList.remove());
+        assertEquals(2, intLinkedList.size());
+
+        assertEquals(2, intLinkedList.remove());
+    }
+
+    @Test
+    void whenRemoveUseIndexThanGetElement() {
+        assertEquals("[1, 2, 3]", intLinkedList.toString());
+
+        assertEquals(2, intLinkedList.remove(1));
+        assertEquals("[1, 3]", intLinkedList.toString());
+
+
+        assertEquals(3, intLinkedList.remove(1));
+        assertEquals("[1]", intLinkedList.toString());
+
+        assertEquals(1, intLinkedList.remove(0));
+        assertEquals("[]", intLinkedList.toString());
+    }
+
+    @Test
+    void whenRemoveWrongIndexThanGetIndexOutOfBoundException() {
+        Throwable exception = assertThrows(IndexOutOfBoundsException.class, () -> intLinkedList.remove(31));
+        assertEquals("wrong index 31", exception.getMessage());
     }
 
     @Test
@@ -192,5 +221,26 @@ class ShppLinkedListTest {
         assertEquals("[]", list.toString());
     }
 
+    @Test
+    void whenToArrayThanGetArrayObjects() {
+        Integer[] integers = {1, 2, 3};
+        assertArrayEquals(integers, intLinkedList.toArray());
+    }
 
+    @Test
+    void whenIteratorTestThanSequenceElement() {
+        int k = 1;
+        Iterator<Integer> iterator = intLinkedList.iterator();
+        while (iterator.hasNext()) {
+            assertEquals(k++, iterator.next());
+        }
+    }
+
+    @Test
+    void whenTestFailFastBehaviorIteratorExpectConcurrentModificationException() {
+        Iterator<Integer> iterator = intLinkedList.iterator();
+        intLinkedList.add(7);
+        Throwable except = assertThrows(ConcurrentModificationException.class, iterator::next);
+        assertEquals("list changed", except.getMessage());
+    }
 }
