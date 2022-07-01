@@ -57,7 +57,8 @@ public class ShppLinkedList<E> {
 
     /**
      * add collection items starting from the specified index
-     * @param index specified index
+     *
+     * @param index      specified index
      * @param collection it's add
      * @return true if success
      */
@@ -67,14 +68,38 @@ public class ShppLinkedList<E> {
         while (current.getNext() != null) {
             if (i == index) {
                 for (E el : collection) {
-                set(i++, el);
+                    add(i++, el);
                 }
                 break;
             }
             current = current.getNext();
             i++;
         }
+        modCount++;
         return true;
+    }
+
+    public void addFirst(E element) {
+        if (head == null) {
+            this.head = new Node<>(element);
+            size++;
+            modCount++;
+        } else {
+            add(0, element);
+        }
+    }
+
+    public void addLast(E element) {
+        linkLast(element);
+    }
+
+    /**
+     * returns head but does not delete
+     *
+     * @return first element data
+     */
+    public E peek() {
+        return head == null ? null : head.data;
     }
 
     /**
@@ -135,9 +160,11 @@ public class ShppLinkedList<E> {
     /**
      * remove first
      */
-    public void remove() {
+    public E remove() {
+        Node<E> temp = head;
         head = head.next;
         size--;
+        return temp.data;
     }
 
     public int size() {
@@ -197,6 +224,21 @@ public class ShppLinkedList<E> {
         }
     }
 
+    public void clear() {
+        if (head != null) {
+            Node<E> next = head.next;
+            while (next != null) {
+                head.data = null;
+                head = next;
+                next = next.next;
+                size--;
+            }
+            size--;
+            modCount++;
+            head = null;
+        }
+    }
+
     @Override
     public String toString() {
         if (size == 0) {
@@ -211,6 +253,8 @@ public class ShppLinkedList<E> {
         joiner.add(temp.toString());
         return joiner.toString();
     }
+
+
 
     private static class Node<E> {
         private E data;

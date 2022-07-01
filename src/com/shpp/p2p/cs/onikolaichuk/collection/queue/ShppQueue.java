@@ -30,8 +30,8 @@ public class ShppQueue<E> extends ShppLinkedList<E> {
     }
 
     @Override
-    public void remove() {
-        linkedList.remove();
+    public E remove() {
+       return linkedList.remove();
     }
 
     /**
