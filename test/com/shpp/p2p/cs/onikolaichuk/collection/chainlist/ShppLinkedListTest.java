@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,7 +38,6 @@ class ShppLinkedListTest {
         assertEquals("[777, 1, 2, 3]", intLinkedList.toString());
     }
 
-
     @Test
     void whenAddUseIndexThenExpectedShiftPresentElement() {
         assertEquals("[1, 2, 3]", intLinkedList.toString());
@@ -45,14 +45,10 @@ class ShppLinkedListTest {
         assertEquals("[1, 888, 2, 3]", intLinkedList.toString());
     }
 
-
     @Test
     void whenAddAllThenGrowCurrent() {
         assertEquals("[1, 2, 3]", intLinkedList.toString());
-        ArrayList<Integer> list = new ArrayList<>();
-        list.add(100);
-        list.add(200);
-        list.add(300);
+        List<Integer> list = List.of(100, 200, 300);
         assertEquals("[100, 200, 300]", list.toString());
         intLinkedList.addAll(1, list);
         assertEquals("[1, 100, 200, 300, 2, 3]", intLinkedList.toString());
@@ -95,7 +91,6 @@ class ShppLinkedListTest {
         assertEquals("[1, 2, 3, 777]", intLinkedList.toString());
     }
 
-
     @Test
     void whenSetInCurrentPositionThanElementChange() {
         assertTrue(intLinkedList.set(0, 17));
@@ -104,8 +99,9 @@ class ShppLinkedListTest {
     }
 
     @Test
-    void whenSetInWrongIndexNumberThanExpectIOBException() {
-        Throwable throwable = assertThrows(IndexOutOfBoundsException.class, () -> intLinkedList.set(777, 31));
+    void whenSetInWrongIndexNumberThanExpectIndexOutBoundException() {
+        Throwable throwable = assertThrows(
+                IndexOutOfBoundsException.class, () -> intLinkedList.set(777, 31));
         assertEquals("Wrong index 777", throwable.getMessage());
     }
 
@@ -118,7 +114,8 @@ class ShppLinkedListTest {
 
     @Test
     void whenGetWrongIndexThanGetIndexOutBoundException() {
-        Throwable exception = assertThrows(IndexOutOfBoundsException.class, () -> intLinkedList.get(31));
+        Throwable exception = assertThrows(
+                IndexOutOfBoundsException.class, () -> intLinkedList.get(31));
         assertEquals("wrong index 31", exception.getMessage());
     }
 
@@ -184,7 +181,8 @@ class ShppLinkedListTest {
 
     @Test
     void whenRemoveWrongIndexThanGetIndexOutOfBoundException() {
-        Throwable exception = assertThrows(IndexOutOfBoundsException.class, () -> intLinkedList.remove(31));
+        Throwable exception = assertThrows(
+                IndexOutOfBoundsException.class, () -> intLinkedList.remove(31));
         assertEquals("wrong index 31", exception.getMessage());
     }
 
@@ -198,7 +196,6 @@ class ShppLinkedListTest {
         intLinkedList.add(null);
         assertTrue(intLinkedList.contains(null));
     }
-
 
     @Test
     void whenClearThanEmptyChain() {

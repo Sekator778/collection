@@ -5,13 +5,15 @@ import java.util.*;
 /**
  * this data structure is based on nodes that contain data
  * and a link to the next node
- *
+ * iterator - fail fast
  * @param <E> generic
  */
 public class ShppLinkedList<E> implements Iterable<E> {
     /* start node in the chain */
     private Node<E> head;
+    /* number of all nodes */
     private int size;
+    /* change counter */
     private int modCount;
 
     /**
@@ -20,17 +22,15 @@ public class ShppLinkedList<E> implements Iterable<E> {
     public boolean add(E data) {
         if (head == null) {
             head = new Node<>(data);
-            size++;
-            modCount++;
         } else {
             Node<E> temp = head;
             while (temp.getNext() != null) {
                 temp = temp.getNext();
             }
             temp.setNext(new Node<>(data));
-            size++;
-            modCount++;
         }
+        size++;
+        modCount++;
         return true;
     }
 
@@ -52,45 +52,18 @@ public class ShppLinkedList<E> implements Iterable<E> {
         } else {
             Node<E> current = head;
             int i = 0;
+            Node<E> previous = null;
             while (current.getNext() != null) {
                 if (i == index) {
-                    linkBefore(current, data);
-                    break;
-                }
-                current = current.getNext();
-                i++;
-            }
-        }
-    }
-
-    public void add2(int index, E data) {
-        if (isIndexNoCorrect(index)) {
-            throw new IndexOutOfBoundsException("wrong index " + index);
-        }
-        if (head == null || index == 0) {
-            Node<E> nodeAdd = new Node<>(data);
-            nodeAdd.setNext(head);
-            head = nodeAdd;
-            size++;
-            modCount++;
-        } else {
-            Node<E> current = head;
-            Node<E> next = current.next;
-            int k = 0;
-            while (current != null) {
-                if (k == index) {
-                    Node<E> tmp = current;
-                    current = new Node<>(data);
-                    current.next = tmp;
-                    tmp.next = next;
+                    previous.setNext(new Node<>(data));
+                    previous.getNext().setNext(current);
                     size++;
                     modCount++;
                     break;
-                } else {
-                    current = current.next;
-                    next = current.next;
-                    k++;
                 }
+                previous = current;
+                current = current.getNext();
+                i++;
             }
         }
     }
@@ -120,7 +93,7 @@ public class ShppLinkedList<E> implements Iterable<E> {
     }
 
     /**
-     * insert new element in the head of the chain
+     * add new element in the head of the chain
      *
      * @param data - element for add to node
      */
@@ -134,8 +107,16 @@ public class ShppLinkedList<E> implements Iterable<E> {
         }
     }
 
+    /**
+     * add new node it hte tail list
+     * @param data element
+     */
     public void addLast(E data) {
-        linkLast(data);
+        Node<E> current = head;
+        while (current.next != null) {
+            current = current.next;
+        }
+        current.setNext(new Node<>(data));
     }
 
     /**
@@ -165,33 +146,8 @@ public class ShppLinkedList<E> implements Iterable<E> {
     }
 
     /**
-     * insert a new node from the data before the given one
-     */
-    private void linkBefore(Node<E> node, E data) {
-        Node<E> previous = null;
-        previous = geteNode(node, previous);
-        Node<E> newNode = new Node<>(data);
-        previous.setNext(newNode);
-        newNode.setNext(node);
-        size++;
-        modCount++;
-    }
-
-    /**
-     * insert new node into tail list
-     *
-     * @param data specific element for insert into node
-     */
-    private void linkLast(E data) {
-        Node<E> current = head;
-        while (current.next != null) {
-            current = current.next;
-        }
-        current.setNext(new Node<>(data));
-    }
-
-    /**
-     * Replaces the element at the specified position in this list with the specified element.
+     * Replaces the element at the specified position in this list
+     * with the specified element.
      * Throws IndexOutOfBoundsException,
      * if the specified index is out of range (index < 0 || index >= size()).
      */
@@ -306,19 +262,6 @@ public class ShppLinkedList<E> implements Iterable<E> {
         return null;
     }
 
-    private Node<E> geteNode(Node<E> temp, Node<E> pred) {
-        Node<E> eNode = head;
-        while (eNode.getNext() != null) {
-            pred = eNode;
-            if (eNode.getNext().equals(temp)) {
-                break;
-            }
-            eNode = eNode.getNext();
-        }
-        assert pred != null;
-        return pred;
-    }
-
     /**
      * return number node with first equals with data
      * @param data specific element
@@ -355,6 +298,9 @@ public class ShppLinkedList<E> implements Iterable<E> {
         return result;
     }
 
+    /**
+     * my favorite task
+     */
     public void reverse() {
         Node<E> previous = null;
         Node<E> current = head;
@@ -443,6 +389,10 @@ public class ShppLinkedList<E> implements Iterable<E> {
         private E data;
         private Node<E> next;
 
+        /**
+         * create node with specific element within
+         * @param data element
+         */
         public Node(E data) {
             this.data = data;
         }
