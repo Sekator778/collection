@@ -1,18 +1,14 @@
 package com.shpp.p2p.cs.onikolaichuk.collection.chainlist;
 
-import com.shpp.p2p.cs.onikolaichuk.collection.list.ShppList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShppLinkedListTest {
-    private ShppLinkedList<Integer> intLinkedList = new ShppLinkedList<>();
+    private final ShppLinkedList<Integer> intLinkedList = new ShppLinkedList<>();
 
     @BeforeEach
     public void initList() {
@@ -66,6 +62,11 @@ class ShppLinkedListTest {
         assertEquals(1, intLinkedList.remove());
         assertEquals(2, intLinkedList.peek());
     }
+    @Test
+    void whenPeekIfListEmptyThanGetNull() {
+        intLinkedList.clear();
+        assertNull(intLinkedList.peek());
+    }
 
     @Test
     void whenAddFirstHeadUpdate() {
@@ -93,29 +94,28 @@ class ShppLinkedListTest {
 
 
     @Test
-    void whenSetInCurrentPositionThanElementsShiftToTheRight() {
+    void whenSetInCurrentPositionThanElementChange() {
         assertTrue(intLinkedList.set(0, 17));
         assertEquals(17, intLinkedList.peek());
-        assertEquals("[17, 1, 2, 3]", intLinkedList.toString());
-
+        assertEquals("[17, 2, 3]", intLinkedList.toString());
     }
 
     @Test
-    void rt() {
-        LinkedList<Integer> list = new LinkedList<>();
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        assertEquals("[1, 2, 3]", list.toString());
-        assertEquals(1, list.set(0, 17));
-        assertEquals(17, list.peek());
-        assertEquals("[17, 2, 3]", list.toString());
-
-
+    void whenSetInWrongIndexNumberThanExpectIOBException() {
+        Throwable throwable = assertThrows(IndexOutOfBoundsException.class, () -> intLinkedList.set(777, 31));
+        assertEquals("Wrong index 777", throwable.getMessage());
     }
 
     @Test
-    void get() {
+    void whenGetThanGetElement() {
+        assertEquals(1, intLinkedList.get(0));
+        assertEquals(2, intLinkedList.get(1));
+        assertEquals(3, intLinkedList.get(2));
+    }
+    @Test
+    void whenGetWrongIndexThanGetIndexOutBoundException() {
+      Throwable exception = assertThrows(IndexOutOfBoundsException.class, () -> intLinkedList.get(31));
+      assertEquals("wrong index 31", exception.getMessage());
     }
 
     @Test
@@ -126,11 +126,48 @@ class ShppLinkedListTest {
     }
 
     @Test
-    void size() {
+    void sizeReturnCountElementsInList() {
+        assertEquals(3, intLinkedList.size());
+        intLinkedList.add(17);
+        assertEquals(4, intLinkedList.size());
+    }
+
+    @Test
+    void whenIndexOfThanReturnFirstPositionCurrentElement() {
+        assertEquals(0, intLinkedList.indexOf(1));
+        assertEquals(1, intLinkedList.indexOf(2));
+        assertEquals(2, intLinkedList.indexOf(3));
+    }
+    @Test
+    void whenIndexOfElementNoPresentThanReturnNegativeOne() {
+        assertEquals(-1, intLinkedList.indexOf(-1));
+        assertEquals(-1, intLinkedList.indexOf(765));
+    }
+
+    @Test
+    void whenPollThanGetDataOfCurrentHead() {
+        System.out.println(intLinkedList);
+        assertEquals(1, intLinkedList.poll());
+        System.out.println(intLinkedList);
+
+        assertEquals(2, intLinkedList.poll());
+        System.out.println(intLinkedList);
+
     }
 
     @Test
     void testRemove() {
+    }
+
+    @Test
+    void whenContainsThenTrue() {
+        assertTrue(intLinkedList.contains(1));
+        assertTrue(intLinkedList.contains(2));
+        assertTrue(intLinkedList.contains(3));
+        assertFalse(intLinkedList.contains(4));
+        assertFalse(intLinkedList.contains(null));
+        intLinkedList.add(null);
+        assertTrue(intLinkedList.contains(null));
     }
 
 
@@ -140,6 +177,7 @@ class ShppLinkedListTest {
         intLinkedList.clear();
         assertEquals("[]", intLinkedList.toString());
     }
+
     @Test
     void whenClearEmptyThanEmptyChain() {
         ShppLinkedList<Boolean> list = new ShppLinkedList<>();

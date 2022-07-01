@@ -1,10 +1,8 @@
 package com.shpp.p2p.cs.onikolaichuk.collection.chainlist;
 
-import java.util.Collection;
-import java.util.NoSuchElementException;
-import java.util.StringJoiner;
+import java.util.*;
 
-public class ShppLinkedList<E> {
+public class ShppLinkedList<E> implements Iterable<E>{
     private Node<E> head;
     private int size;
     private int modCount;
@@ -95,11 +93,27 @@ public class ShppLinkedList<E> {
 
     /**
      * returns head but does not delete
+     * if list empty return null
      *
      * @return first element data
      */
     public E peek() {
         return head == null ? null : head.data;
+    }
+
+    /**
+     * returns and remove head
+     * @return element head
+     */
+    public E poll() {
+        if (head == null) {
+            return null;
+        }
+        E result = head.data;
+        head = head.next;
+        size--;
+        modCount++;
+        return result;
     }
 
     /**
@@ -130,7 +144,7 @@ public class ShppLinkedList<E> {
      */
     public boolean set(int index, E element) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Wrong index " + index);
         }
         if (head.data.equals(element) && index == 0) {
             return true;
@@ -150,11 +164,26 @@ public class ShppLinkedList<E> {
     }
 
 
-    public E get() {
-        if (head == null) {
-            throw new NoSuchElementException();
+    public E get(int index) {
+        if (isIndexNoCorrect(index)) {
+            throw new IndexOutOfBoundsException("wrong index " + index);
+        } else {
+            int k = 0;
+            Node<E> current = head;
+            while (current != null) {
+                if (k == index) {
+                    return current.data;
+                } else {
+                    k++;
+                    current = current.next;
+                }
+            }
         }
-        return head.data;
+        return null;
+    }
+
+    private boolean isIndexNoCorrect(int index) {
+        return (index < 0 || index >= size);
     }
 
     /**
@@ -210,6 +239,19 @@ public class ShppLinkedList<E> {
         return pred;
     }
 
+    public int indexOf(E e) {
+        Node<E> current = head;
+        int k = 0;
+        while (current != null) {
+            if (current.data.equals(e)) {
+                return k;
+            }
+            current = current.next;
+            k++;
+        }
+        return -1;
+    }
+
     public void reverse() {
         Node<E> previous = null;
         Node<E> current = head;
@@ -254,9 +296,28 @@ public class ShppLinkedList<E> {
         return joiner.toString();
     }
 
+    public boolean contains(E element) {
+        if (head == null) {
+            return false;
+        } else {
+            Node<E> current = head;
+            while (current != null) {
+                if ((current.data == null && element == null) || current.data.equals(element)) {
+                    return true;
+                }
+                current = current.next;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new InnerListIterator();
+    }
 
 
-    private static class Node<E> {
+    class Node<E> {
         private E data;
         private Node<E> next;
 
@@ -275,6 +336,36 @@ public class ShppLinkedList<E> {
         @Override
         public String toString() {
             return String.valueOf(data);
+        }
+    }
+
+    private class InnerListIterator implements Iterator<E> {
+        /* iterator step counter */
+        private int index;
+        /* fixed amount of modifications */
+        private final int expectedModCount;
+        private Node<E> current = head;
+
+        private InnerListIterator() {
+            this.expectedModCount = modCount;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < size;
+        }
+
+        @Override
+        public E next() {
+            if (expectedModCount != modCount) {
+                throw new ConcurrentModificationException();
+            } else if (!hasNext()) {
+                throw new NoSuchElementException();
+            } else {
+               E result = current.data;
+               current = current.next;
+               return result;
+            }
         }
     }
 }

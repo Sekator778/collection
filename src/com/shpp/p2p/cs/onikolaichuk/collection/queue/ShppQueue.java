@@ -39,16 +39,14 @@ public class ShppQueue<E> extends ShppLinkedList<E> {
      * @return head
      */
     public E element() {
-        return linkedList.get();
+        return linkedList.peek();
     }
 
     /**
      * Retrieves and removes the head of this queue, or returns null if this queue is empty.
      */
     public E poll() {
-        E result = linkedList.get();
-        linkedList.remove(0);
-        return result;
+        return linkedList.remove(0);
     }
 
     @Override
