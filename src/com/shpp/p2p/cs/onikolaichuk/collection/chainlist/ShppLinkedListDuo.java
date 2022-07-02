@@ -4,6 +4,16 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.StringJoiner;
 
+/**
+ * implementation of a bidirectional linked list
+ *
+ * Here, the implementation is smaller,
+ * as the ShppLinkedList class was worked out in more detail
+ * for educational purposes.
+ * A bidirectionally linked list is simpler, so it is left as is.
+ *
+ * @param <E> generic
+ */
 public class ShppLinkedListDuo<E> {
     private Node<E> head = null;
     private int size = 0;
@@ -75,6 +85,12 @@ public class ShppLinkedListDuo<E> {
         size++;
     }
 
+    /**
+     * add collection items starting from the specified index
+     *
+     * @param index      specified index
+     * @param collection it's add
+     */
     public void addAll(int index, Collection<? extends E> collection) {
         if (index == 0 && head == null) {
             collection.forEach(this::add);
@@ -141,11 +157,13 @@ public class ShppLinkedListDuo<E> {
     /**
      * Removes the element at the specified position in this list.
      */
-    public void remove(int index) {
+    public E remove(int index) {
+        E result = null;
         if (isIndexNoCorrect(index)) {
             throw new IndexOutOfBoundsException("wrong index " + index + " size: " + size);
         }
         if (index == 0) {
+            result = head.data;
             head = head.next;
             head.previous = null;
         } else {
@@ -153,6 +171,7 @@ public class ShppLinkedListDuo<E> {
             Node<E> current = head.next;
             while (current != null) {
                 if (k == index) {
+                    result = current.data;
                     current.previous.setNext(current.getNext());
                 }
                 current = current.next;
@@ -160,6 +179,7 @@ public class ShppLinkedListDuo<E> {
             }
         }
         size--;
+        return result;
     }
 
     /**
@@ -167,7 +187,7 @@ public class ShppLinkedListDuo<E> {
      *
      * @return head
      */
-    public E get() {
+    public E getFirst() {
         if (head == null) {
             throw new NoSuchElementException("Empty LinkedList");
         }
@@ -177,12 +197,14 @@ public class ShppLinkedListDuo<E> {
     /**
      * find element to data
      */
-    public Node<E> get(E element) {
+    public E get(int index) {
         Node<E> current = head;
+        int k = 0;
         while (current.next != null) {
-            if (current.data.equals(element)) {
-                return current;
+            if (k == index) {
+                return current.data;
             }
+            k++;
             current = current.next;
         }
         throw new NoSuchElementException("No node");
@@ -192,6 +214,10 @@ public class ShppLinkedListDuo<E> {
         return size;
     }
 
+    /**
+     * view data structure into string
+     * @return string with all nodes data
+     */
     @Override
     public String toString() {
         StringJoiner joiner = new StringJoiner(", ", "[", "]");
@@ -204,15 +230,24 @@ public class ShppLinkedListDuo<E> {
         return joiner.toString();
     }
 
+    /**
+     * a node that has a link to the previous and next
+     * and a date field
+     *
+     * @param <E> data
+     */
     private static class Node<E> {
+        /* specific element */
         E data;
+        /* link to the next node */
         Node<E> next;
+        /* link to the previous node */
         Node<E> previous;
 
         private Node(E data) {
             this.data = data;
         }
-
+        /*getter and setter*/
         public Node<E> getNext() {
             return next;
         }

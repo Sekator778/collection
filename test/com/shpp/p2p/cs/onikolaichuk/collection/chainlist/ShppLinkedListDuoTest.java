@@ -25,12 +25,6 @@ class ShppLinkedListDuoTest {
     }
 
     @Test
-    void add() {
-        listDuo.add("four");
-        assertEquals("[one, two, three, four]", listDuo.toString());
-    }
-
-    @Test
     void testAdd() {
         listDuo.add(0, "zero");
         assertEquals("[zero, one, two, three]", listDuo.toString());
@@ -106,22 +100,30 @@ class ShppLinkedListDuoTest {
 
     @Test
     void whenDeleteLastIfListEmptyGetError() {
-        ShppLinkedListDuo list = new ShppLinkedListDuo();
+        ShppLinkedListDuo<Object> list = new ShppLinkedListDuo<>();
         Throwable except = assertThrows(NoSuchElementException.class, list::deleteLast);
         assertEquals("Empty linked list", except.getMessage());
     }
 
     @Test
-    void remove() {
-
+    void whenRemoveUseIndexThanGetElementUnderItsIndex() {
+        assertEquals("two", listDuo.remove(1));
+        assertEquals("three", listDuo.remove(1));
+        assertEquals("one", listDuo.remove(0));
+        assertEquals(0, listDuo.size());
     }
 
     @Test
-    void get() {
+    void whenGetFirstThanFirstElement() {
+        assertEquals("one", listDuo.getFirst());
+        assertEquals(3, listDuo.size());
     }
 
     @Test
-    void testGet() {
+    void whenGetUseDataThanElementUnderIts() {
+        assertEquals("two", listDuo.get(1));
+        assertEquals("two", listDuo.get(1));
+        assertEquals(3, listDuo.size());
     }
 
     @Test
