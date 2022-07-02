@@ -6,6 +6,7 @@ import java.util.*;
  * this data structure is based on nodes that contain data
  * and a link to the next node
  * iterator - fail fast
+ *
  * @param <E> generic
  */
 public class ShppLinkedList<E> implements Iterable<E> {
@@ -109,6 +110,7 @@ public class ShppLinkedList<E> implements Iterable<E> {
 
     /**
      * add new node it hte tail list
+     *
      * @param data element
      */
     public void addLast(E data) {
@@ -210,6 +212,9 @@ public class ShppLinkedList<E> implements Iterable<E> {
      * remove first node
      */
     public E remove() {
+        if (head == null) {
+            throw new NoSuchElementException("list empty size: " + size);
+        }
         Node<E> temp = head;
         head = head.next;
         size--;
@@ -264,6 +269,7 @@ public class ShppLinkedList<E> implements Iterable<E> {
 
     /**
      * return number node with first equals with data
+     *
      * @param data specific element
      * @return number position if found
      */
@@ -282,6 +288,7 @@ public class ShppLinkedList<E> implements Iterable<E> {
 
     /**
      * convert linkedList to array
+     *
      * @return array
      */
     public Object[] toArray() {
@@ -335,6 +342,7 @@ public class ShppLinkedList<E> implements Iterable<E> {
 
     /**
      * representation in the form of a String
+     *
      * @return string include all nodes
      */
     @Override
@@ -354,6 +362,7 @@ public class ShppLinkedList<E> implements Iterable<E> {
 
     /**
      * find specific element into list
+     *
      * @param data specific element
      * @return true if present
      */
@@ -374,6 +383,7 @@ public class ShppLinkedList<E> implements Iterable<E> {
 
     /**
      * it's return implementation fail fast iterator
+     *
      * @return iterator
      */
     @Override
@@ -383,6 +393,7 @@ public class ShppLinkedList<E> implements Iterable<E> {
 
     /**
      * inner class node
+     *
      * @param <E> specific data
      */
     private static class Node<E> {
@@ -391,6 +402,7 @@ public class ShppLinkedList<E> implements Iterable<E> {
 
         /**
          * create node with specific element within
+         *
          * @param data element
          */
         public Node(E data) {

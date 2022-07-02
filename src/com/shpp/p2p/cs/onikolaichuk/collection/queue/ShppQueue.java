@@ -3,52 +3,73 @@ package com.shpp.p2p.cs.onikolaichuk.collection.queue;
 
 import com.shpp.p2p.cs.onikolaichuk.collection.chainlist.ShppLinkedList;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
+/**
+ * this data structure works as follows FIFO
+ * the queue is implemented on a linked list
+ * <p>
+ * we have the same linked list under one condition
+ * that we insert at the end and take from the beginning
+ *
+ * @param <E> data
+ */
 public class ShppQueue<E> extends ShppLinkedList<E> {
-    private ShppLinkedList<E> linkedList = new ShppLinkedList<>();
-    public static void main(String[] args) {
-        Queue<String> queue = new LinkedList<>();
-        queue.add("one");
-        queue.add("two");
-        queue.add("three");
-        System.out.println(queue);
+    private final ShppLinkedList<E> linkedList = new ShppLinkedList<>();
 
-        String element = queue.element();
-        System.out.println(element);
-        System.out.println(queue);
-
-        String head = queue.poll();
-        System.out.println(queue);
-    }
-
+    /**
+     * add element into queue
+     *
+     * @param element specific data
+     * @return true if success
+     */
     @Override
     public boolean add(E element) {
-        linkedList.add(element);
-        return true;
-    }
-
-    @Override
-    public E remove() {
-       return linkedList.remove();
+        return linkedList.add(element);
     }
 
     /**
-     * Retrieves, but does not remove, the head of this queue.
-     * @return head
+     * remove first(head) nod
+     *
+     * @return data
+     */
+    @Override
+    public E remove() {
+        return linkedList.remove();
+    }
+
+    /**
+     * returns
+     * but does not remove,
+     * the head of this queue.
+     *
+     * @return head data
      */
     public E element() {
         return linkedList.peek();
     }
 
     /**
-     * Retrieves and removes the head of this queue, or returns null if this queue is empty.
+     * returns and removes the head of this queue,
+     * or returns null if this queue is empty.
      */
     public E poll() {
-        return linkedList.remove(0);
+        return linkedList.remove();
     }
 
+    /**
+     * returns but does not delete
+     * null if empty queue
+     *
+     * @return data
+     */
+    public E peek() {
+        return linkedList.peek();
+    }
+
+    /**
+     * make string
+     *
+     * @return string with all data
+     */
     @Override
     public String toString() {
         return linkedList.toString();

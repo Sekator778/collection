@@ -3,10 +3,7 @@ package com.shpp.p2p.cs.onikolaichuk.collection.chainlist;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -187,6 +184,13 @@ class ShppLinkedListTest {
     }
 
     @Test
+    void whenRemoveEmptyLinkedListThanError() {
+        ShppLinkedList<Boolean> list = new ShppLinkedList<>();
+        Throwable exception = assertThrows(NoSuchElementException.class, list::remove);
+        assertEquals("list empty size: 0", exception.getMessage());
+    }
+
+    @Test
     void whenContainsThenTrue() {
         assertTrue(intLinkedList.contains(1));
         assertTrue(intLinkedList.contains(2));
@@ -240,4 +244,6 @@ class ShppLinkedListTest {
         Throwable except = assertThrows(ConcurrentModificationException.class, iterator::next);
         assertEquals("list changed", except.getMessage());
     }
+
+
 }
